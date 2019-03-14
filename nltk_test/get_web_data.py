@@ -14,3 +14,39 @@ def get_data(url):
     text = " ".join(paras)
     #print(text)
     return text
+
+
+# get article text from IT blog http://doxydonkey.blogspot.com/
+def get_articles(url, links):
+    print("GETTING", url)
+    response = urlopen(url).read()
+    soup = BeautifulSoup(response, "lxml")
+    print("PROCESSING...")
+    for a in soup.find_all('a'):
+        try:
+            url = a['href']
+            title = a['title']
+            #print(title, url)
+            if title == "Older Posts":
+                print(title, url)
+                if len(links) < 2:
+                    links.append(url)
+                    get_articles(url, links)
+        except:
+            title = ""
+
+# get text from <li> inside <div> with class "post-body"
+def get_article_text(url):
+    text = []
+    print("GETTING", url)
+    response = urlopen(url).read().decode("utf-8")
+    soup = BeautifulSoup(response, "lxml")
+    print("READING...")
+    my_divs = soup.find_all("div", {"class":"post-body"})
+    for div in my_divs:
+        print(div['class'])
+        for li in div.find_all("li"):
+            item = li.text #.encode("ascii", errors="replace")
+            print("ITEM", item)
+            text.append(item)
+    return text

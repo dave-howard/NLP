@@ -17,8 +17,8 @@ def get_data(url):
 
 
 # get article text from IT blog http://doxydonkey.blogspot.com/
-def get_articles(url, links):
-    print("GETTING", url)
+def get_articles(url, links, n):
+    print("GETTING (",n,")", url)
     response = urlopen(url).read()
     soup = BeautifulSoup(response, "lxml")
     print("PROCESSING...")
@@ -29,9 +29,9 @@ def get_articles(url, links):
             #print(title, url)
             if title == "Older Posts":
                 print(title, url)
-                if len(links) < 2:
+                if len(links) < n:
                     links.append(url)
-                    get_articles(url, links)
+                    get_articles(url, links, n-1)
         except:
             title = ""
 
